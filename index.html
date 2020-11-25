@@ -95,44 +95,18 @@
 		}
 		.marker-0{}
 		.marker-U:after{content: "S";}
-		.marker-K1:after{content: "K1";}
-		.marker-K2:after{content: "K2";}
-		.marker-K3:after{content: "K3";}
-		.marker-K4:after{content: "K4";}
-		.marker-K5:after{content: "K5";}
-		.marker-K6:after{content: "K6";}
-		.marker-K7:after{content: "K7";}
-		.marker-K8:after{content: "K8";}
-		.marker-K9:after{content: "K9";}
-		.marker-K10:after{content: "K10";}
-		.marker-K11:after{content: "K11";}
-		.marker-K12:after{content: "K12";}
-		.marker-K13:after{content: "K13";}
-		.marker-K14:after{content: "K14";}
-		.marker-K16:after{content: "K16";}
-		.marker-K17:after{content: "K17";}
-		.marker-K18:after{content: "K18";}
-		.marker-K19:after{content: "K19";}
-		.marker-K20:after{content: "K20";}
-		.marker-K21:after{content: "K21";}
-		.marker-K22:after{content: "K22";}
-		.marker-K23:after{content: "K23";}
-		.marker-K24:after{content: "K24";}
-		.marker-K25:after{content: "K25";}
-		.marker-K15:after{content: "K15";}
-
       </style>
    </head>
    <body>
       <div id='map'></div>
       <script>
-         var DEFAULT_POSITION={"lat":52.10773,"lon":0}	
+         var DEFAULT_POSITION={"lat":52.1,"lon":0}	
                 var map = tt.map({
                     container: 'map',
                     key: '2PaeD4XGBugNF3hwjRa3uRosjkvxAMp8',
                     style: 'tomtom://vector/1/basic-main',
          center: [DEFAULT_POSITION.lon,DEFAULT_POSITION.lat], 
-         zoom: 7
+         zoom: 6
          	});
          var ttZoomControls = new tt.plugins.ZoomControls({
          											className: 'margin-left-30'
@@ -162,8 +136,8 @@
           function addPoints(results) {
          
          var data=results.features;
-		 
-         
+	 document.title= "Count:"+data.length;
+
             // iterate through your table to set the marker to lat/long values for each row
          
             data.forEach(function(row) {
