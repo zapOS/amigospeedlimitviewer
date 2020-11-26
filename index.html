@@ -2,8 +2,6 @@
 <html>
    <head>
       <title>Amigo speed limit reports</title>
-      <meta name='viewport'
-         content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'/>
       <link rel='stylesheet' type='text/css' href='https://api.tomtom.com/maps-sdk-for-web/cdn/5.x/5.52.0/maps/maps.css'>
       <link rel='stylesheet' type='text/css' href='https://api.tomtom.com/maps-sdk-for-web/cdn/plugins/PanControls/1.0.11//PanControls.css'/>
       <link rel='stylesheet' type='text/css' href='https://api.tomtom.com/maps-sdk-for-web/cdn/plugins/ZoomControls/1.0.10//ZoomControls.css'/>
@@ -12,12 +10,77 @@
       <script src='https://api.tomtom.com/maps-sdk-for-web/cdn/plugins/ZoomControls/1.0.10//ZoomControls-web.js'></script>
       <script src='https://api.tomtom.com/maps-sdk-for-web/cdn/5.x/5.52.0/maps/maps-web.min.js'></script>
       <style>
+html, body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: row;
+}
+body > div {
+  flex: 1;
+  height: 100%;
+}
+.container {
+  padding: 1em;
+}
+img {
+  display: block;
+  max-width:230px;
+  max-height:78px;
+  width: auto;
+  height: auto;
+}
+
+	  #header {
+				 display: flex;
+				 flex-direction: row;
+				 align-items: center;
+	             height: 7%;
+				 text-align: center;
+				 padding: 20px;
+				 
+			}
+	  #Total{
+		width: 80%;
+		font-family: 'TomTom SSM',Helvetica,Arial,sans-serif;
+		font-size-adjust: 1;
+		font-weight: bold;
+	  }
+  	  #TotalS{
+	  font-size: 120%;
+	  color: black;
+	  }
+	  #FixedS{
+	  font-size: 120%;
+	  margin: 35px;
+	  color: green;
+	  }
+	  #resolved{
+	  font-size: 6px;
+	  margin:35px;
+	  }
+	  #reports{
+	  font-size: 6px;
+	  margin-right:16px;
+	  }
+	  
+	  #logo{
+	    display: inline-block;
+		float: left;
+	  }
+	  #rightBanner{
+	    display: inline-block;
+		float: right;
+	  }
          #map {
          border-left: 1px solid #fff;
-         position: absolute;
+		 height: 100%;
          width: 99%;
-         top: 0;
-         bottom: 0;
+		 display: block
          }
          .margin-left-30 {
          margin-left: 30px;
@@ -95,18 +158,37 @@
 		}
 		.marker-0{}
 		.marker-U:after{content: "S";}
+
       </style>
    </head>
    <body>
+   <div id='parent'>
+   <div id="header"><div id='logo'><img  src='VESI.png'  class="inline"/></div><div id="Total"><span id="TotalS"></span>                                             <span id="FixedS"></span><br/><span id="reports">reported</span><span id="resolved"> closed</span> </div><div id="rightBanner"><img src='VESIText.png' class="inline"/></div></div>
       <div id='map'></div>
+	  </div>
       <script>
-         var DEFAULT_POSITION={"lat":52.1,"lon":0}	
+	  
+function GetURLParameter(sParam){
+var sPageURL = window.location.search.substring(1);
+var sURLVariables = sPageURL.split('&');
+for (var i = 0; i < sURLVariables.length; i++){
+	var sParameterName = sURLVariables[i].split('=');
+	if (sParameterName[0] == sParam) 
+	{
+		return sParameterName[1];
+	}
+}
+return '';
+}		
+			var DEFAULT_POSITION={"lat":0,"lon":0};
+			var ZOOM=1	
+			
                 var map = tt.map({
                     container: 'map',
                     key: '2PaeD4XGBugNF3hwjRa3uRosjkvxAMp8',
                     style: 'tomtom://vector/1/basic-main',
          center: [DEFAULT_POSITION.lon,DEFAULT_POSITION.lat], 
-         zoom: 6
+         zoom: 2
          	});
          var ttZoomControls = new tt.plugins.ZoomControls({
          											className: 'margin-left-30'
@@ -129,18 +211,22 @@
 								   xhr.setRequestHeader('Content-Type', 'application/json');	
 									},
          success: addPoints
+		 
       });
-         
+         		 		
+
           }
           // create a function called addPoints that iterates through your table (row by row) to create markers and popups
           function addPoints(results) {
          
          var data=results.features;
-	 document.title= "Count:"+data.length;
-
+		 var total=data.length;
+			document.title= "Count:"+data.length;
             // iterate through your table to set the marker to lat/long values for each row
-         
+         var fixed=0;
             data.forEach(function(row) {
+			if(row.properties.CFLStatus=='Accepted' || row.properties.CFLStatus == 'Fixed')
+			      fixed++;
               // create a variable for your popup and populate your popup with information from your table
          var popupOffsets = {
          top: [0, 0],
@@ -153,7 +239,9 @@
 		 var dt = new Date(0); // The 0 there is the key, which sets the date to the epoch
 		 dt.setUTCSeconds(row.properties.DateSubmitted);
               var popup = new tt.Popup({offset: popupOffsets})
-                            .setHTML('<b>Reported SpeedLimit:'+row.properties.SpeedLimit+'</b></br><b>'+row.properties.Comments+'</b><br/>ID : '+ row.properties.MSRGuid  ); // use the table to populate your popup with text
+                            .setHTML('<b>Reported SpeedLimit:'+row.properties.SpeedLimit+'</b></br><b>'+row.properties.Comments+'</b><br>ID: <div id="'+row.properties.MSRGuid+'">'+row.properties.MSRGuid+'</div><script>document.getElementById(row.properties.MSRGuid).addEventListener("click", function(e){		let copied =  e.target.text;  copyToClipboard( copied );  alert(copied  + " copied to clipboard!")});'							); // use the table to populate your popup with text
+
+	
               // create a variable for your markup and add it to the map 
 	     var kitchenMarkerElement=lookupMarker(row);
 
@@ -164,8 +252,12 @@
                 .setPopup(popup)
                 .addTo(map); // add the marker to the map
          
-         
          });
+
+		$('#TotalS').text(total );
+		$('#FixedS').text(fixed );
+		 
+
           }
          function lookupColor(row){
 
