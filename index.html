@@ -153,7 +153,7 @@
 		 var dt = new Date(0); // The 0 there is the key, which sets the date to the epoch
 		 dt.setUTCSeconds(row.properties.DateSubmitted);
               var popup = new tt.Popup({offset: popupOffsets})
-                            .setHTML('<b>Reported SpeedLimit:'+row.properties.SpeedLimit+'</b></br><b>'+row.properties.Comments+'</b>' ); // use the table to populate your popup with text
+                            .setHTML('<b>Reported SpeedLimit:'+row.properties.SpeedLimit+'</b></br><b>'+row.properties.Comments+'</b><br/>ID : '+ row.properties.MSRGuid  ); // use the table to populate your popup with text
               // create a variable for your markup and add it to the map 
 	     var kitchenMarkerElement=lookupMarker(row);
 
